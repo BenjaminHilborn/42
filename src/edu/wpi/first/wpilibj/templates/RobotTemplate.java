@@ -8,9 +8,12 @@
 package edu.wpi.first.wpilibj.templates;
 
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.buttons.*;
 
 /**
@@ -25,45 +28,59 @@ public class RobotTemplate extends SimpleRobot {
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
-    Talon motor1 = new Talon(1);
-    Talon motor2 = new Talon(2);
+    Talon motor_l1 = new Talon(2);
+    Talon motor_l2 = new Talon(3);
+    Talon motor_r1 = new Talon(8);
+    Talon motor_r2 = new Talon(9);
+    Victor liftmotor1 = new Victor(1);
+    Victor liftmotor2 = new Victor(10);
     Joystick joystick1 = new Joystick(1);
-    //Joystick.ButtonType shiftup = new Joystick.ButtonType(7);
     Button shiftup = new DigitalIOButton(6);
     Button shiftdown = new DigitalIOButton(5);
+    int gear=1;
+    int gearval=4;
     
     public void autonomous() {
-        
+         
     }
-    int gear=1;
-    int gearval=3;
+    
     /**
      * This function is called once each time the robot enters operator control.
      */
     public void operatorControl() {
         while(true){
+            
+            
             double leftside, rightside;
             leftside=(joystick1.getX() + joystick1.getY());
             rightside=-(-joystick1.getX() + joystick1.getY());
-            if (Math.abs(leftside) < 0.18){
+            if (Math.abs(leftside) < 0.25){
                 leftside=0;
             }
-            if (Math.abs(rightside) < 0.18){
+            if (Math.abs(rightside) < 0.25){
                 rightside=0;
             }
-            if (shiftup.get()== true && gear<=3){
-                gear++;
-                gearval--;
+            if (joystick1.getRawButton(6)== true && gear<3){
+                gear=gear+1;
+                gearval=gearval-1;
+                Timer.delay(0.15);
             }
-            if (shiftdown.get()== true && gear>=1){
-                gear--;
-                gearval++;
+            if (joystick1.getRawButton(5)== true && gear>1){
+                gear=gear-1;
+                gearval=gearval+1;
+                Timer.delay(0.15); 
             }
-            leftside=(leftside*leftside*leftside);
-            rightside=(rightside*rightside*rightside);
-            System.out.println(leftside+"\t"+rightside);
-            motor1.set(leftside/gearval);
-            motor2.set(rightside/gearval);
+            double lift = joystick1.getZ();
+           
+            double tomotorl=(leftside/gearval);
+            double tomotorr=(rightside/gearval);
+            System.out.println(tomotorl+"\t"+tomotorr);
+            motor_l1.set(tomotorl);
+            motor_l2.set(tomotorl);
+            motor_r1.set(tomotorr);
+            motor_r2.set(tomotorr);
+            liftmotor1.set(lift);
+            liftmotor2.set(-lift);
         }
     }
     
