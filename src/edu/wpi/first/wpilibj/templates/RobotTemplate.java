@@ -52,8 +52,8 @@ public class RobotTemplate extends SimpleRobot {
             
             
             double leftside, rightside;
-            leftside=(joystick1.getX() + joystick1.getY());
-            rightside=-(-joystick1.getX() + joystick1.getY());
+            leftside=(-joystick1.getX() + joystick1.getY());
+            rightside=-(joystick1.getX() + joystick1.getY());
             if (Math.abs(leftside) < 0.25){
                 leftside=0;
             }
@@ -72,15 +72,15 @@ public class RobotTemplate extends SimpleRobot {
             }
             double lift = joystick1.getZ();
            
-            double tomotorl=(leftside/gearval);
-            double tomotorr=(rightside/gearval);
+            double tomotorl=(-leftside/gearval);
+            double tomotorr=(-rightside/gearval);
             System.out.println(tomotorl+"\t"+tomotorr);
             motor_l1.set(tomotorl);
             motor_l2.set(tomotorl);
             motor_r1.set(tomotorr);
             motor_r2.set(tomotorr);
-            liftmotor1.set(lift);
-            liftmotor2.set(-lift);
+            liftmotor1.set(lift/1.5);
+            liftmotor2.set(-lift/1.5);
         }
     }
     
